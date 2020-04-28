@@ -178,7 +178,7 @@ impl CommandOpt {
 
 impl Drop for CommandOpt {
     fn drop(&mut self) {
-        if self.is_raw {
+        if self.is_raw && false {
             tmpfs::clear_tmpfs_dir(&self.tmp_dir);
         }
     }
