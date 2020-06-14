@@ -56,6 +56,40 @@ impl Depot {
         id
     }
 
+    pub fn save_track_file(&self, id: usize, track_file: &Path, input_buf: &Vec<u8>) {
+        let mut f = match fs::File::open(track_file) {
+            Ok(file) => file,
+            Err(err) => {
+                panic!("could not open {:?}: {:?}", track_file, err);
+            }
+        };
+    
+        let mut buffer = Vec::new();
+        f.read_to_end(&mut buffer).unwrap();
+        let buffer = &buffer[..];
+        
+        //save trace info
+
+        let file_name = format!("track_id:{:06}", id);
+        let track_file_name = self.dirs.traces_dir.join(file_name);
+        let track_file_path = Path::new(track_file_name.as_path());
+
+        let mut f = fs::File::create(track_file_path).expect("Could not save new input file.");
+        f.write_all(buffer)
+            .expect("Could not write track file to file.");
+        f.flush().expect("Could not flush file I/O.");
+
+        //save input used
+        let file_input_name = format!("id:{:06}", id);
+        let track_file_input_name = self.dirs.traces_dir.join(file_input_name);
+        let track_file_input_path = Path::new(track_file_input_name.as_path());
+
+        let mut f = fs::File::create(track_file_input_path).expect("Could not save new input file.");
+        f.write_all(input_buf)
+            .expect("Could not write track file to file.");
+        f.flush().expect("Could not flush file I/O.");
+    }
+
     pub fn save(&self, status: StatusType, buf: &Vec<u8>, cmpid: u32) -> usize {
         match status {
             StatusType::Normal => {

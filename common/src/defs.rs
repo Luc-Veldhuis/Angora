@@ -18,6 +18,7 @@ pub static MSAN_OPTIONS_CONTENT: &str =
 
 // depot.rs
 pub static CRASHES_DIR: &str = "crashes";
+pub static TRACES_DIR: &str = "traces";
 pub static HANGS_DIR: &str = "hangs";
 pub static INPUTS_DIR: &str = "queue";
 

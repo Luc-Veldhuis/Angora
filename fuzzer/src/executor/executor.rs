@@ -247,6 +247,8 @@ impl Executor {
                 let crash_or_tmout = self.try_unlimited_memory(buf, cmpid);
                 if !crash_or_tmout {
                     let cond_stmts = self.track(id, buf, speed);
+                    let track_path = Path::new(&self.cmd.track_path);
+                    self.depot.save_track_file(id, track_path, buf);
                     if cond_stmts.len() > 0 {
                         self.depot.add_entries(cond_stmts);
                         if self.cmd.enable_afl {
@@ -338,6 +340,7 @@ impl Executor {
     }
 
     fn track(&mut self, id: usize, buf: &Vec<u8>, speed: u32) -> Vec<cond_stmt::CondStmt> {
+        debug!("TRACKING {:?}!!!", id);
         self.envs.insert(
             defs::TRACK_OUTPUT_VAR.to_string(),
             self.cmd.track_path.clone(),
